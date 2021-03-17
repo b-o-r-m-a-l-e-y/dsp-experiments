@@ -1,6 +1,7 @@
 filename = "/home/bormaley/my/dsp-experiments/data.bin"
 import numpy as np
 import matplotlib.pyplot as plt
+import dspfunc as dsp
 
 class MSKModulator:
     def __init__(self, filename, samples_per_symbol):
@@ -36,9 +37,16 @@ class MSKModulator:
                     self.time += 1
         return generatedSamplesI, generatedSamplesQ
 
-
-MSKMod = MSKModulator(filename, 4)
+sps = 4
+MSKMod = MSKModulator(filename, sps)
 i,q = MSKMod.process(10)
+cplx = dsp.IQToComplex(i, q)
+bandSignal = []
+time = 0.0
+for sample in cplx:
+    bandSignal.append(sample*np.exp(1j*100*time))
+    time += 1
+i,q = dsp.ComplexToIQ(bandSignal)
 plt.plot(i)
 plt.plot(q)
 plt.show()
