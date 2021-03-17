@@ -1,4 +1,4 @@
-filename = "/home/bormaley/my/data.bin"
+filename = "/home/bormaley/my/dsp-experiments/data.bin"
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -6,14 +6,17 @@ class MSKModulator:
     def __init__(self, filename, samples_per_symbol):
         self.fileName = filename
         self.samplesPerSymbol = samples_per_symbol
-        self.time = 0
+        self.time = 0.0
         self.prevPhase = 0
         self.prevBit = 0
         self.fd = open(filename, 'rb')
         self.cmplxSamples = []
 
-    def process(self, nBytes):
-        bytes = list(self.fd.read(nBytes))
+    def process(self, nBytes = 0):
+        if nBytes == 0:
+            bytes = self.fd.read()
+        else:
+            bytes = self.fd.read(nBytes)
         generatedSamplesI = []
         generatedSamplesQ = []
         for byte in bytes:
@@ -31,7 +34,7 @@ class MSKModulator:
                     self.prevPhase = phase
                     self.prevBit = bit
                     self.time += 1
-            return generatedSamplesI, generatedSamplesQ
+        return generatedSamplesI, generatedSamplesQ
 
 
 MSKMod = MSKModulator(filename, 4)
